@@ -553,7 +553,10 @@ class FTPServer:
             data = file.read(1024)
             if not data:
                 break
-            self.dataSock.send(data.encode("utf-8"))
+            if self.mode_is_Ascii:
+                self.dataSock.send(data.encode("utf-8"))
+            else:
+                self.dataSock.send(data)
         file.close()
         self.stopDataSock()
         return self.sendCommand(226)
@@ -585,7 +588,10 @@ class FTPServer:
             data = self.dataSock.recv(1024)
             if not data:
                 break
-            file.write(data.decode("utf-8"))
+            if self.mode_is_Ascii:
+                file.write(data.decode("utf-8"))
+            else:
+                file.write(data)
         file.close()
         self.stopDataSock()
         return self.sendCommand(226)
@@ -602,7 +608,10 @@ class FTPServer:
                 data = self.dataSock.recv(1024)
                 if not data:
                     break
-                file.write(data.decode("utf-8"))
+                if self.mode_is_Ascii:
+                    file.write(data.decode("utf-8"))
+                else:
+                    file.write(data)
         else:
             n = 1
             while os.path.exists(pathname):
@@ -618,7 +627,10 @@ class FTPServer:
                 data = self.dataSock.recv(1024)
                 if not data:
                     break
-                file.write(data.decode("utf-8"))
+                if self.mode_is_Ascii:
+                    file.write(data.decode("utf-8"))
+                else:
+                    file.write(data)
         file.close()
         self.stopDataSock()
         return self.sendCommand(226)
